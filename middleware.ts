@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Admin API routes: require ADMIN_PASSWORD cookie
-  if (path.startsWith("/api/admin/collections")) {
+  if (path.startsWith("/api/admin/collections") || path.startsWith("/api/admin/modules")) {
     const adminPassword = process.env.ADMIN_PASSWORD;
     if (!adminPassword)
       return NextResponse.json({ error: "Admin not enabled" }, { status: 403 });
@@ -35,5 +35,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/upload", "/api/manage", "/api/admin/collections/:path*"],
+  matcher: ["/api/upload", "/api/manage", "/api/admin/collections/:path*", "/api/admin/modules/:path*"],
 };

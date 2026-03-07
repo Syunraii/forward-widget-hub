@@ -44,6 +44,7 @@ export default function AdminPage() {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingModuleId, setDeletingModuleId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/auth")
@@ -96,6 +97,28 @@ export default function AdminPage() {
       setPasswordError("网络错误");
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const handleDeleteModule = async (colId: string, mod: Module) => {
+    if (!confirm(`确定删除模块「${mod.title || mod.filename}」？此操作不可恢复。`))
+      return;
+    setDeletingModuleId(mod.id);
+    try {
+      const res = await fetch(`/api/admin/modules/${mod.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setCollections((prev) =>
+          prev.map((c) =>
+            c.id === colId
+              ? { ...c, modules: c.modules.filter((m) => m.id !== mod.id) }
+              : c
+          )
+        );
+      }
+    } finally {
+      setDeletingModuleId(null);
     }
   };
 
@@ -291,7 +314,7 @@ export default function AdminPage() {
               {col.modules.map((mod) => (
                 <div
                   key={mod.id}
-                  className="px-6 py-3 flex items-center gap-4 hover:bg-slate-50 transition-colors"
+                  className="px-6 py-3 flex items-center gap-4 hover:bg-slate-50 transition-colors group"
                 >
                   <div className="p-2 rounded-lg bg-amber-50 text-amber-600 flex-shrink-0">
                     <FileCode className="w-4 h-4" />
@@ -320,6 +343,18 @@ export default function AdminPage() {
                       {mod.author ? ` · ${mod.author}` : ""}
                     </p>
                   </div>
+                  <button
+                    onClick={() => handleDeleteModule(col.id, mod)}
+                    disabled={deletingModuleId === mod.id}
+                    className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 opacity-0 group-hover:opacity-100 flex-shrink-0"
+                    title="删除模块"
+                  >
+                    {deletingModuleId === mod.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               ))}
               {col.modules.length === 0 && (
