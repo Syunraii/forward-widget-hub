@@ -46,7 +46,7 @@ jobs:
           npx wrangler r2 bucket create forward-widget-hub-storage 2>/dev/null || true
 
       - name: Build
-        run: BACKEND=cloudflare npx @opennextjs/cloudflare build
+        run: npm run build:cf
 
       - name: Deploy
         env:
