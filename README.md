@@ -127,6 +127,21 @@ environment:
 
 > 密码保护范围：首页上传界面和管理接口。模块下载链接、订阅链接等公开接口不受影响。
 
+## 管理后台（可选）
+
+设置 `ADMIN_PASSWORD` 环境变量即可启用管理后台，访问 `/admin` 登录后可查看和删除所有用户上传的合集。
+
+**Docker** — 在 `docker-compose.yml` 的 `environment` 中添加：
+
+```yaml
+environment:
+  - ADMIN_PASSWORD=你的管理员密码
+```
+
+**Cloudflare** — 在 Cloudflare Dashboard → Workers → Settings → Variables 中添加 `ADMIN_PASSWORD`。
+
+> `ADMIN_PASSWORD` 与 `ACCESS_PASSWORD` 相互独立，可以设置不同的密码。
+
 ## 使用方式
 
 1. **上传模块** — 将 `.js` 文件拖入上传区域，或粘贴远程链接点击「转存」

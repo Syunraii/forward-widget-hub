@@ -10,6 +10,20 @@ async function sha256(text: string): Promise<string> {
 }
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // Admin API routes: require ADMIN_PASSWORD cookie
+  if (path.startsWith("/api/admin/collections")) {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword)
+      return NextResponse.json({ error: "Admin not enabled" }, { status: 403 });
+    const cookie = request.cookies.get("fwh_admin")?.value;
+    const hash = await sha256(adminPassword);
+    if (cookie === hash) return NextResponse.next();
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Access password routes
   const password = process.env.ACCESS_PASSWORD;
   if (!password) return NextResponse.next();
 
@@ -21,5 +35,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/upload", "/api/manage"],
+  matcher: ["/api/upload", "/api/manage", "/api/admin/collections/:path*"],
 };
