@@ -33,7 +33,7 @@
 
 点击下方按钮，按提示授权 Cloudflare 和 GitHub 账号即可完成部署，无需任何手动配置：
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/InchStudio/forward-widget-hub)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Syunraii/forward-widget-hub)
 
 > 部署过程会自动创建所需的 D1 数据库和 R2 存储桶，并初始化数据表。后续每次推送到 `main` 分支都会自动重新部署。
 
